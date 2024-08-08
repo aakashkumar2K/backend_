@@ -2,14 +2,15 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
-   "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js"
   },
   "author": "aakash kumar",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "prettier": "^3.3.3"
   }
 }
