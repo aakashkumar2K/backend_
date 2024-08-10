@@ -1,4 +1,5 @@
-class ApiError{
+//import { Error } from "mongoose";
+class ApiError extends Error{
     constructor(statusCode,message="Something went wrong",error=[],stack=""){
         super(message);
         this.statusCode=statusCode;
@@ -16,3 +17,4 @@ class ApiError{
 
     }
 }
+export {ApiError};

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcryptjs  from "bcryptjs";
-import { JsonWebTokenError} from "jsonwebtoken";
+import  JsonWebToken from "jsonwebtoken";
 const userSchema=new mongoose.Schema({
 userName:{
     type:String,
@@ -32,7 +32,7 @@ userName:{
     type:String //cloudinary url
  },
  watchHistory:[{
-  type:Schema.Types.ObjectId,
+  type:mongoose.Schema.Types.ObjectId,
   ref:"Video"
  }],
  password:{
@@ -44,13 +44,14 @@ refreshToken:{
 }
 
 },{timeStamps:true});
+
 userSchema.pre('save',async function(next){
    if(!this.isModified(this.password)) return null;
-   this.password=bcryptjs.hash(this.password,10);
+   this.password=await bcryptjs.hash(this.password,10);
    next();
 })
-userSchema.methods.generateAccessToken(function(){
-   JsonWebTokenError.sign({
+userSchema.methods.generateAccessToken=(function(){
+   JsonWebToken.sign({
       id:this.id,
       email:this.email,
       userName:this.userName,
@@ -59,12 +60,9 @@ userSchema.methods.generateAccessToken(function(){
    process.env.ACCESS_TOKEN_SECRET,
    {expiresIn:process.env.ACCESS_TOKEN_EXPIRY})
 })
-userSchema.methods.generateAccessToken(function(){
-   JsonWebTokenError.sign({
+userSchema.methods.generateRefreshToken=(function(){
+   JsonWebToken.sign({
       id:this.id,
-      email:this.email,
-      userName:this.userName,
-      fullName:this.fullName
    },
    process.env.REFRESH_TOKEN_SECRET,
    {expiresIn:process.env.REFRESH_TOKEN_EXPIRY})
