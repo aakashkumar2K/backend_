@@ -23,7 +23,7 @@ userName:{
     trim:true,
     index:true
  },
- avtar:{
+ avatar:{
     type:String,//cloudinary url
     required:true,
 
@@ -43,30 +43,30 @@ refreshToken:{
     type:String
 }
 
-},{timeStamps:true});
+},{timestamps:true});
 
 userSchema.pre('save',async function(next){
-   if(!this.isModified(this.password)) return null;
+   if(!this.isModified("password")) return next();
    this.password=await bcryptjs.hash(this.password,10);
    next();
 })
-userSchema.methods.generateAccessToken=(function(){
-   JsonWebToken.sign({
-      id:this.id,
+userSchema.methods.generateAccessToken=function(){
+ return   JsonWebToken.sign({
+      id:this._id,
       email:this.email,
       userName:this.userName,
       fullName:this.fullName
    },
    process.env.ACCESS_TOKEN_SECRET,
    {expiresIn:process.env.ACCESS_TOKEN_EXPIRY})
-})
-userSchema.methods.generateRefreshToken=(function(){
-   JsonWebToken.sign({
-      id:this.id,
+}
+userSchema.methods.generateRefreshToken=function(){
+  return JsonWebToken.sign({
+      id:this._id,
    },
    process.env.REFRESH_TOKEN_SECRET,
    {expiresIn:process.env.REFRESH_TOKEN_EXPIRY})
-})
+}
 
 userSchema.methods.isPasswordCorrect=async function(password){
 return bcryptjs.compare(passowrd,this.passowrd);
